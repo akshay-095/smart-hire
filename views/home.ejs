@@ -1,15 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Hire | India's Premier Job Portal</title>
-</head>
-<body style="font-family: Arial, sans-serif; text-align: center; margin-top: 50px;">
-    
-    <h1>Welcome to Smart Hire 🇮🇳</h1>
-    <p>Connecting India's top talent with great opportunities.</p>
-    <p><em>(Phase 1: Project Setup Successful!)</em></p>
+<%- include('partials/header', { title: 'Home' }) %>
+<%- include('partials/navbar') %>
 
-</body>
-</html>
+<header class="hero">
+    <div class="hero-content">
+        <h1>Find Your Next Career Opportunity in India</h1>
+        <p>Connecting freshers, graduates, and experienced professionals with top Indian employers.</p>
+        
+        <form action="/jobs" method="GET" class="search-container">
+            <input type="text" name="title" placeholder="Job Title, Skills, or Company">
+            <input type="text" name="location" placeholder="City (e.g. Bengaluru, Pune)">
+            <button type="submit" class="btn-primary">Search Jobs</button>
+        </form>
+    </div>
+</header>
+
+<main class="container">
+    <h2>Featured Roles</h2>
+    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Explore top opportunities updated daily</p>
+
+    <div class="job-grid">
+        <div class="job-card">
+            <div>
+                <h3 class="job-title">Software Development Intern</h3>
+                <p class="job-company">TechCraft India Solutions</p>
+                <div class="badge-group">
+                    <span class="badge">Bengaluru, KA</span>
+                    <span class="badge">Internship</span>
+                    <span class="badge badge-salary">₹15,000 / month</span>
+                </div>
+                <p class="job-details">Looking for SDE interns with strong understanding of Node.js and MongoDB.</p>
+            </div>
+            <a href="/jobs" class="btn-secondary" style="text-align: center; margin-top: 1rem;">View Details</a>
+        </div>
+
+        <div class="job-card">
+            <div>
+                <h3 class="job-title">Frontend Developer</h3>
+                <p class="job-company">Hyderabad Digital Hub</p>
+                <div class="badge-group">
+                    <span class="badge">Hyderabad, TS</span>
+                    <span class="badge">Full-time</span>
+                    <span class="badge badge-salary">₹6 - 10 LPA</span>
+                </div>
+                <p class="job-details">Build scalable, interactive web interfaces using modern HTML5, CSS3, and JavaScript.</p>
+            </div>
+            <a href="/jobs" class="btn-secondary" style="text-align: center; margin-top: 1rem;">View Details</a>
+        </div>
+
+        <div class="job-card">
+            <div>
+                <h3 class="job-title">Data Analyst Intern</h3>
+                <p class="job-company">Analytics India Corp</p>
+                <div class="badge-group">
+                    <span class="badge">Pune, MH</span>
+                    <span class="badge">Internship</span>
+                    <span class="badge badge-salary">₹20,000 / month</span>
+                </div>
+                <p class="job-details">Work with real-world datasets, create visual dashboards, and extract insights.</p>
+            </div>
+            <a href="/jobs" class="btn-secondary" style="text-align: center; margin-top: 1rem;">View Details</a>
+        </div>
+    </div>
+</main>
+
+<%- include('partials/footer') %>

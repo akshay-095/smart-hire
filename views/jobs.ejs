@@ -1,0 +1,53 @@
+<%- include('partials/header', { title: 'Browse Jobs' }) %>
+<%- include('partials/navbar') %>
+
+<main class="container">
+    <h1>Available Job Opportunities</h1>
+    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Find the perfect match for your career goals</p>
+
+    <!-- Interactive Client Filter -->
+    <div class="search-container" style="margin-bottom: 2rem;">
+        <input type="text" id="searchInput" placeholder="Search by job title, company, or city...">
+        <select id="typeFilter">
+            <option value="All">All Work Modes</option>
+            <option value="Full-time">Full-time</option>
+            <option value="Part-time">Part-time</option>
+            <option value="Internship">Internship</option>
+        </select>
+    </div>
+
+    <!-- Dynamic Job Listings Grid -->
+    <div class="job-grid" id="jobGrid">
+        <% if (jobs.length === 0) { %>
+            <p>No jobs available at the moment.</p>
+        <% } else { %>
+            <% jobs.forEach(job => { %>
+                <div class="job-card" 
+                     data-title="<%= job.title.toLowerCase() %>" 
+                     data-company="<%= job.company.toLowerCase() %>" 
+                     data-location="<%= job.location.toLowerCase() %>" 
+                     data-type="<%= job.type %>">
+                    <div>
+                        <h3 class="job-title"><%= job.title %></h3>
+                        <p class="job-company"><%= job.company %></p>
+                        <div class="badge-group">
+                            <span class="badge"><%= job.location %></span>
+                            <span class="badge"><%= job.type %></span>
+                            <span class="badge badge-salary"><%= job.salary %></span>
+                        </div>
+                        <p class="job-details"><%= job.description %></p>
+                    </div>
+                    <button class="btn-primary" style="margin-top: 1rem; width: 100%; cursor: pointer;" onclick="alert('Application submission will be enabled in Phase 7!')">Apply Now</button>
+                </div>
+            <% }); %>
+        <% } %>
+    </div>
+
+    <!-- Empty State Message (Hidden by default, shown via DOM Manipulation if 0 matches) -->
+    <div id="noResults" style="display: none; text-align: center; padding: 3rem 1rem; background: var(--white); border-radius: 8px; margin-top: 1.5rem; border: 1px dashed var(--border-color);">
+        <p style="font-size: 1.2rem; font-weight: 600; color: var(--text-dark); margin-bottom: 0.5rem;">🔍 No matching jobs found</p>
+        <p style="color: var(--text-muted);">Try adjusting your search terms or changing the work mode filter.</p>
+    </div>
+</main>
+
+<%- include('partials/footer') %>
