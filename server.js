@@ -1,34 +1,56 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const path = require('path');
-const connectDB = require('./config/db'); // Import DB Connection
-const Job = require('./models/Job');      // Import Job Model
+const session = require('express-session');
+const connectMongo = require('connect-mongo');
+const MongoStore = connectMongo.default || connectMongo;
+
+const connectDB = require('./config/db');
+const Job = require('./models/Job');
+const authRoutes = require('./routes/authRoutes');
 
 dotenv.config();
-
-// Connect to MongoDB
 connectDB();
 
 const app = express();
 
+// View Engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
+// Middleware
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Session Configuration
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
+    cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 day
+}));
+
+// Global Middleware
+app.use((req, res, next) => {
+    res.locals.user = req.session.user || null;
+    next();
+});
+
 // Routes
+app.use('/', authRoutes);
+
 app.get('/', (req, res) => {
     res.render('home');
 });
 
-// Fetch jobs dynamically from MongoDB
 app.get('/jobs', async (req, res) => {
     try {
-        // Job.find() gets ALL jobs from the database
         const jobs = await Job.find().sort({ createdAt: -1 }); 
         res.render('jobs', { jobs: jobs });
     } catch (error) {
         console.error(error);
-        res.status(500).send("Server Error while fetching jobs");
+        res.status(500).send("Server Error");
     }
 });
 
