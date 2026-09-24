@@ -6,11 +6,21 @@
         <h1>Find Your Next Career Opportunity in India</h1>
         <p>Connecting freshers, graduates, and experienced professionals with top Indian employers.</p>
         
-        <form action="/jobs" method="GET" class="search-container">
-            <input type="text" name="title" placeholder="Job Title, Skills, or Company">
-            <input type="text" name="location" placeholder="City (e.g. Bengaluru, Pune)">
-            <button type="submit" class="btn-primary">Search Jobs</button>
-        </form>
+<form action="/jobs" method="GET" style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem;">
+    <input 
+        type="text" 
+        name="search" 
+        placeholder="Job title, skills, or company" 
+        style="padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px; flex: 2; min-width: 200px;"
+    >
+    <input 
+        type="text" 
+        name="location" 
+        placeholder="City or State (e.g., Bengaluru)" 
+        style="padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px; flex: 1; min-width: 150px;"
+    >
+    <button type="submit" class="btn-primary" style="padding: 0.75rem 1.5rem; cursor: pointer;">Search Jobs</button>
+</form>
     </div>
 </header>
 

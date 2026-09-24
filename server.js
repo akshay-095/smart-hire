@@ -6,8 +6,8 @@ const connectMongo = require('connect-mongo');
 const MongoStore = connectMongo.default || connectMongo;
 
 const connectDB = require('./config/db');
-const Job = require('./models/Job');
 const authRoutes = require('./routes/authRoutes');
+const jobRoutes = require('./routes/jobRoutes'); // Import job routes
 
 dotenv.config();
 connectDB();
@@ -28,7 +28,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
-    cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 day
+    cookie: { maxAge: 1000 * 60 * 60 * 24 }
 }));
 
 // Global Middleware
@@ -39,19 +39,10 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/', authRoutes);
+app.use('/', jobRoutes); // Use job routes
 
 app.get('/', (req, res) => {
     res.render('home');
-});
-
-app.get('/jobs', async (req, res) => {
-    try {
-        const jobs = await Job.find().sort({ createdAt: -1 }); 
-        res.render('jobs', { jobs: jobs });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Server Error");
-    }
 });
 
 const PORT = process.env.PORT || 3000;

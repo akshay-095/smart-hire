@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// Define the blueprint (Schema) for a Job
 const jobSchema = new mongoose.Schema({
     title: { type: String, required: true },
     company: { type: String, required: true },
@@ -8,8 +7,8 @@ const jobSchema = new mongoose.Schema({
     type: { type: String, required: true, enum: ['Full-time', 'Part-time', 'Internship'] },
     salary: { type: String, required: true },
     description: { type: String, required: true },
-    createdAt: { type: Date, default: Date.now } // Automatically saves when the job was posted
+    postedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Links job to a Recruiter
+    createdAt: { type: Date, default: Date.now }
 });
 
-// Compile and export the model
 module.exports = mongoose.model('Job', jobSchema);

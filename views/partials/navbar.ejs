@@ -5,15 +5,23 @@
             <li><a href="/">Home</a></li>
             <li><a href="/jobs">Browse Jobs</a></li>
             
-            <!-- Dynamic Navigation based on Login Status -->
             <% if (user) { %>
-                <li style="color: var(--text-muted); font-weight: bold;">Hi, <%= user.name %>!</li>
+                <!-- Recruiter gets Dashboard -->
+                <% if (user.role === 'recruiter') { %>
+                    <li><a href="/dashboard" style="color: var(--accent-color); font-weight: bold;">Dashboard</a></li>
+                <% } %>
+                
+                <!-- Job Seeker gets Upload Resume / Profile -->
+                <% if (user.role === 'seeker') { %>
+                    <li><a href="/profile" style="color: var(--accent-color); font-weight: bold;">Upload Resume</a></li>
+                <% } %>
+                
+                <li style="color: var(--text-muted); font-weight: bold;">Hi, <%= user.name %></li>
                 <li><a href="/logout" class="btn-secondary">Logout</a></li>
             <% } else { %>
                 <li><a href="/login" class="btn-secondary">Login</a></li>
                 <li><a href="/register" class="btn-primary">Register</a></li>
             <% } %>
-            
         </ul>
     </div>
 </nav>

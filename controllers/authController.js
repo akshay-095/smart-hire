@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 
 // Show Registration Page
 exports.getRegister = (req, res) => {
-    res.render('register');
+    res.render('register', { error: null });
 };
 
 // Handle Registration Submission
@@ -14,7 +14,7 @@ exports.postRegister = async (req, res) => {
         // Check if user already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.send("User already exists with this email."); // Simple error for now
+            return res.render('register', { error: "An account with this email already exists." });
         }
 
         // Hash the password securely
@@ -32,13 +32,13 @@ exports.postRegister = async (req, res) => {
         res.redirect('/login');
     } catch (error) {
         console.error(error);
-        res.status(500).send("Server Error during registration");
+        res.status(500).render('register', { error: "Server error during registration. Please try again." });
     }
 };
 
 // Show Login Page
 exports.getLogin = (req, res) => {
-    res.render('login');
+    res.render('login', { error: null });
 };
 
 // Handle Login Submission
@@ -49,32 +49,37 @@ exports.postLogin = async (req, res) => {
         // Find the user by email
         const user = await User.findOne({ email });
         if (!user) {
-            return res.send("Invalid email or password.");
+            return res.render('login', { error: "Invalid email or password." });
         }
 
         // Compare entered password with the hashed password in database
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.send("Invalid email or password.");
+            return res.render('login', { error: "Invalid email or password." });
         }
 
-        // Save user data into the session (Logs them in!)
+        // Save user data into the session
         req.session.user = {
             id: user._id,
             name: user.name,
             role: user.role
         };
 
-        res.redirect('/jobs'); // Redirect to jobs page after successful login
+        // Forces session to save to MongoDB Atlas BEFORE redirecting (Fixes Navbar delay)
+        req.session.save((err) => {
+            if (err) console.error("Session save error:", err);
+            res.redirect('/jobs');
+        });
     } catch (error) {
         console.error(error);
-        res.status(500).send("Server Error during login");
+        res.status(500).render('login', { error: "Server error during login. Please try again." });
     }
 };
 
 // Handle Logout
 exports.logout = (req, res) => {
-    req.session.destroy(() => {
+    req.session.destroy((err) => {
+        if (err) console.error("Logout error:", err);
         res.redirect('/');
     });
 };
