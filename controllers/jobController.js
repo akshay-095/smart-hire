@@ -96,3 +96,43 @@ exports.deleteJob = async (req, res) => {
         res.status(500).send("Server Error deleting job");
     }
 };
+
+// Recruiter: Show Edit Job Form
+exports.getEditJob = async (req, res) => {
+    try {
+        const job = await Job.findById(req.params.id);
+        
+        // Ensure job exists and belongs to this recruiter
+        if (!job || job.postedBy.toString() !== req.session.user.id) {
+            return res.status(403).send("Unauthorized to edit this job");
+        }
+
+        res.render('edit-job', { job });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server Error loading edit form");
+    }
+};
+
+// Recruiter: Submit Edit Job Form
+exports.postEditJob = async (req, res) => {
+    try {
+        const { title, company, location, type, salary, description } = req.body;
+        const job = await Job.findById(req.params.id);
+
+        // Ensure job exists and belongs to this recruiter
+        if (!job || job.postedBy.toString() !== req.session.user.id) {
+            return res.status(403).send("Unauthorized to edit this job");
+        }
+
+        // Update the job in the database
+        await Job.findByIdAndUpdate(req.params.id, {
+            title, company, location, type, salary, description
+        });
+
+        res.redirect('/dashboard');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server Error updating job");
+    }
+};

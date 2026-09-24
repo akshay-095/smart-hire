@@ -1,0 +1,33 @@
+<%- include('partials/header', { title: 'My Profile' }) %>
+<%- include('partials/navbar') %>
+
+<main class="container" style="max-width: 600px; margin-top: 3rem;">
+    <div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <h1 style="color: var(--primary-color);">My Profile</h1>
+        <p><strong>Name:</strong> <%= user.name %></p>
+        <p><strong>Email:</strong> <%= user.email %></p>
+        <p><strong>Account Type:</strong> <%= user.role === 'seeker' ? 'Job Seeker' : 'Recruiter' %></p>
+
+        <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid var(--border-color);">
+
+        <h2 style="margin-bottom: 1rem;">My Resume</h2>
+        
+        <% if (user.resume) { %>
+            <div style="background: #eef2ff; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border: 1px solid #c7d2fe;">
+                ✅ <strong>Resume Active:</strong> <a href="<%= user.resume %>" target="_blank" style="color: var(--accent-color); font-weight: bold; text-decoration: none;">View Current Resume</a>
+            </div>
+        <% } else { %>
+            <p style="color: #dc2626; font-weight: bold; margin-bottom: 1rem;">❌ No resume uploaded yet.</p>
+        <% } %>
+
+        <form action="/profile/upload" method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1rem; background: #f8f9fa; padding: 1.5rem; border-radius: 6px; border: 1px solid var(--border-color);">
+            <div>
+                <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Upload/Update Resume (PDF only)</label>
+                <input type="file" name="resume" accept=".pdf" required style="padding: 0.5rem; background: white; border: 1px solid var(--border-color); border-radius: 6px; width: 100%;">
+            </div>
+            <button type="submit" class="btn-primary" style="padding: 0.75rem; cursor: pointer;">Upload Resume</button>
+        </form>
+    </div>
+</main>
+
+<%- include('partials/footer') %>

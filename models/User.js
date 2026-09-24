@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
-// Define the blueprint for a User (Job Seeker or Recruiter)
 const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role: { type: String, enum: ['seeker', 'recruiter', 'admin'], default: 'seeker' },
+    role: { type: String, required: true, enum: ['seeker', 'recruiter'] },
+    resume: { type: String, default: null }, // NEW: Stores the file path to the resume
     createdAt: { type: Date, default: Date.now }
 });
 

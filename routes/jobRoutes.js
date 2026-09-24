@@ -10,6 +10,9 @@ router.get('/jobs', jobController.getAllJobs);
 router.get('/dashboard', isAuthenticated, isRecruiter, jobController.getDashboard);
 router.get('/jobs/create', isAuthenticated, isRecruiter, jobController.getCreateJob);
 router.post('/jobs/create', isAuthenticated, isRecruiter, jobController.postCreateJob);
+// Recruiter Edit Routes
+router.get('/jobs/edit/:id', isAuthenticated, isRecruiter, jobController.getEditJob);
+router.post('/jobs/edit/:id', isAuthenticated, isRecruiter, jobController.postEditJob);
 router.post('/jobs/delete/:id', isAuthenticated, isRecruiter, jobController.deleteJob);
 
 module.exports = router;

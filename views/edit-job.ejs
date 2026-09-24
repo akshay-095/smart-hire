@@ -1,0 +1,50 @@
+<%- include('partials/header', { title: 'Edit Job' }) %>
+<%- include('partials/navbar') %>
+
+<main class="container" style="max-width: 650px; margin-top: 3rem;">
+    <div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <h1 style="text-align: center; margin-bottom: 1.5rem; color: var(--primary-color);">Edit Job Posting</h1>
+        
+        <form action="/jobs/edit/<%= job._id %>" method="POST" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div>
+                <label style="display: block; font-weight: bold; margin-bottom: 0.25rem;">Job Title</label>
+                <input type="text" name="title" value="<%= job.title %>" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px;">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div>
+                    <label style="display: block; font-weight: bold; margin-bottom: 0.25rem;">Company Name</label>
+                    <input type="text" name="company" value="<%= job.company %>" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px;">
+                </div>
+                <div>
+                    <label style="display: block; font-weight: bold; margin-bottom: 0.25rem;">Location</label>
+                    <input type="text" name="location" value="<%= job.location %>" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px;">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div>
+                    <label style="display: block; font-weight: bold; margin-bottom: 0.25rem;">Job Type</label>
+                    <select name="type" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px;">
+                        <option value="Full-time" <%= job.type === 'Full-time' ? 'selected' : '' %>>Full-time</option>
+                        <option value="Part-time" <%= job.type === 'Part-time' ? 'selected' : '' %>>Part-time</option>
+                        <option value="Internship" <%= job.type === 'Internship' ? 'selected' : '' %>>Internship</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; font-weight: bold; margin-bottom: 0.25rem;">Salary / Compensation</label>
+                    <input type="text" name="salary" value="<%= job.salary %>" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px;">
+                </div>
+            </div>
+
+            <div>
+                <label style="display: block; font-weight: bold; margin-bottom: 0.25rem;">Job Description</label>
+                <textarea name="description" rows="5" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px;"><%= job.description %></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary" style="margin-top: 1rem; cursor: pointer; padding: 0.85rem;">Update Job Listing</button>
+        </form>
+    </div>
+</main>
+
+<%- include('partials/footer') %>

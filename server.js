@@ -5,6 +5,8 @@ const session = require('express-session');
 const connectMongo = require('connect-mongo');
 const MongoStore = connectMongo.default || connectMongo;
 
+const profileRoutes = require('./routes/profileRoutes');
+
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const jobRoutes = require('./routes/jobRoutes'); // Import job routes
@@ -40,6 +42,7 @@ app.use((req, res, next) => {
 // Routes
 app.use('/', authRoutes);
 app.use('/', jobRoutes); // Use job routes
+app.use('/', profileRoutes);
 
 app.get('/', (req, res) => {
     res.render('home');
