@@ -1,5 +1,5 @@
 const Job = require('../models/Job');
-
+const Application = require('../models/Application');
 // Public: View All Jobs (Public Job Board)
 // Public: View All Jobs (With Backend Search & Filtering)
 exports.getAllJobs = async (req, res) => {
@@ -35,10 +35,20 @@ exports.getAllJobs = async (req, res) => {
 };
 
 // Recruiter: View Dashboard
+// Recruiter: View Dashboard
 exports.getDashboard = async (req, res) => {
     try {
-        // Fetch only jobs posted by the currently logged-in recruiter
-        const myJobs = await Job.find({ postedBy: req.session.user.id }).sort({ createdAt: -1 });
+        // Use .lean() to convert Mongoose documents to plain JS objects so we can modify them
+        const myJobs = await Job.find({ postedBy: req.session.user.id })
+                                .sort({ createdAt: -1 })
+                                .lean();
+
+        // Loop through jobs and count the applications for each one
+        for (let job of myJobs) {
+            const applicantCount = await Application.countDocuments({ job: job._id });
+            job.applicantCount = applicantCount;
+        }
+
         res.render('dashboard', { jobs: myJobs });
     } catch (error) {
         console.error(error);
@@ -55,6 +65,9 @@ exports.getCreateJob = (req, res) => {
 exports.postCreateJob = async (req, res) => {
     try {
         const { title, company, location, type, salary, description } = req.body;
+        
+        // NEW: Check if the checkbox was checked ('on' means true, otherwise false)
+        const resumeRequired = req.body.resumeRequired === 'on'; 
 
         const newJob = new Job({
             title,
@@ -63,6 +76,7 @@ exports.postCreateJob = async (req, res) => {
             type,
             salary,
             description,
+            resumeRequired, // NEW: Save this preference to the database
             postedBy: req.session.user.id // Attach recruiter ID
         });
 
@@ -118,16 +132,16 @@ exports.getEditJob = async (req, res) => {
 exports.postEditJob = async (req, res) => {
     try {
         const { title, company, location, type, salary, description } = req.body;
+        const resumeRequired = req.body.resumeRequired === 'on';
+
         const job = await Job.findById(req.params.id);
 
-        // Ensure job exists and belongs to this recruiter
         if (!job || job.postedBy.toString() !== req.session.user.id) {
             return res.status(403).send("Unauthorized to edit this job");
         }
 
-        // Update the job in the database
         await Job.findByIdAndUpdate(req.params.id, {
-            title, company, location, type, salary, description
+            title, company, location, type, salary, description, resumeRequired
         });
 
         res.redirect('/dashboard');

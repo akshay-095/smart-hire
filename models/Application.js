@@ -18,7 +18,7 @@ const applicationSchema = new mongoose.Schema({
     },
     resume: { 
         type: String, 
-        required: true 
+        default: '' // Updated: No longer strictly required
     },
     githubUrl: { 
         type: String, 
