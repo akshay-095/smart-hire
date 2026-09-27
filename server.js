@@ -12,6 +12,10 @@ const authRoutes = require('./routes/authRoutes');
 const jobRoutes = require('./routes/jobRoutes'); // Import job routes
 const applicationRoutes = require('./routes/applicationRoutes');
 
+// Import notification components
+const notificationMiddleware = require('./middleware/notificationMiddleware');
+const notificationRoutes = require('./routes/notificationRoutes');
+
 
 dotenv.config();
 connectDB();
@@ -25,6 +29,9 @@ app.set('views', path.join(__dirname, 'views'));
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// ... AFTER session middleware setup and BEFORE routes ...
+app.use(notificationMiddleware);
 
 // Session Configuration
 app.use(session({
@@ -46,6 +53,7 @@ app.use('/', authRoutes);
 app.use('/', jobRoutes); // Use job routes
 app.use('/', profileRoutes);
 app.use('/', applicationRoutes);
+app.use(notificationRoutes);
 
 app.get('/', (req, res) => {
     res.render('home');

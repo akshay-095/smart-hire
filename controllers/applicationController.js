@@ -1,6 +1,7 @@
 const Application = require('../models/Application');
 const Job = require('../models/Job');
 const User = require('../models/User');
+const Notification = require('../models/Notification');
 
 // Show Job Application Form
 exports.getApplyForm = async (req, res) => {
@@ -66,6 +67,15 @@ exports.postApplyJob = async (req, res) => {
         });
 
         await newApplication.save();
+
+        // TRIGGER NOTIFICATION: Inform recruiter of new applicant
+        await Notification.create({
+            recipient: job.postedBy,
+            sender: user._id,
+            message: `New Application: ${user.name} applied for "${job.title}"`,
+            link: `/jobs/${job._id}/applicants`
+        });
+
         res.redirect('/my-applications');
     } catch (error) {
         if (error.code === 11000) {
@@ -124,6 +134,7 @@ exports.getJobApplicants = async (req, res) => {
 };
 
 // Recruiter: Update Application Status
+// Recruiter: Update Application Status
 exports.updateApplicationStatus = async (req, res) => {
     try {
         if (req.session.user.role !== 'recruiter') {
@@ -143,6 +154,15 @@ exports.updateApplicationStatus = async (req, res) => {
         // Update status and save
         application.status = status;
         await application.save();
+
+        // TRIGGER NOTIFICATION: Inform candidate of status change
+        const job = await Job.findById(application.job);
+        await Notification.create({
+            recipient: application.applicant,
+            sender: req.session.user.id,
+            message: `Status Update: Your application for "${job ? job.title : 'Job'}" was updated to "${status}"`,
+            link: `/my-applications`
+        });
 
         // Redirect explicitly back to the applicants list for this job
         res.redirect(`/jobs/${application.job}/applicants`);
