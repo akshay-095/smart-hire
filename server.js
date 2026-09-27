@@ -10,6 +10,8 @@ const profileRoutes = require('./routes/profileRoutes');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const jobRoutes = require('./routes/jobRoutes'); // Import job routes
+const applicationRoutes = require('./routes/applicationRoutes');
+
 
 dotenv.config();
 connectDB();
@@ -43,6 +45,7 @@ app.use((req, res, next) => {
 app.use('/', authRoutes);
 app.use('/', jobRoutes); // Use job routes
 app.use('/', profileRoutes);
+app.use('/', applicationRoutes);
 
 app.get('/', (req, res) => {
     res.render('home');
