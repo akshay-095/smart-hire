@@ -11,7 +11,7 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const jobRoutes = require('./routes/jobRoutes'); // Import job routes
 const applicationRoutes = require('./routes/applicationRoutes');
-
+const messageRoutes = require('./routes/messageRoutes');
 // Import notification components
 const notificationMiddleware = require('./middleware/notificationMiddleware');
 const notificationRoutes = require('./routes/notificationRoutes');
@@ -54,6 +54,7 @@ app.use('/', jobRoutes); // Use job routes
 app.use('/', profileRoutes);
 app.use('/', applicationRoutes);
 app.use(notificationRoutes);
+app.use(messageRoutes);
 
 app.get('/', (req, res) => {
     res.render('home');

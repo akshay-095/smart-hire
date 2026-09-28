@@ -27,7 +27,7 @@
                         <small style="color: #64748b;">Applied on: <%= new Date(app.appliedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></small>
                     </div>
 
-                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 1rem;">
+                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.75rem;">
                         <!-- Dynamic Status Badges -->
                         <% 
                             let badgeBg = '#e2e8f0'; 
@@ -40,6 +40,11 @@
                         <span style="background: <%= badgeBg %>; color: <%= badgeColor %>; padding: 0.4rem 0.8rem; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">
                             <%= app.status %>
                         </span>
+
+                        <!-- Chat with Recruiter Button -->
+                        <a href="/applications/<%= app._id %>/chat" style="background: #e0e7ff; color: #3730a3; padding: 0.5rem 0.9rem; border-radius: 6px; font-weight: bold; font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;">
+                            💬 Chat with Recruiter
+                        </a>
 
                         <!-- Cancel Application Button -->
                         <form action="/applications/<%= app._id %>/cancel" method="POST" onsubmit="return confirm('Are you sure you want to withdraw your application for this job?');" style="margin: 0;">
