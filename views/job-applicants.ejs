@@ -22,7 +22,11 @@
                     
                     <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem;">
                         <div>
-                            <h3 style="color: var(--primary-color); margin-bottom: 0.25rem;"><%= app.applicant.name %></h3>
+                            <h3 style="color: var(--primary-color); margin-bottom: 0.25rem;">
+                                <a href="/profile/<%= app.applicant._id %>" target="_blank" style="color: inherit; text-decoration: underline;" title="View Candidate Profile">
+                                    <%= app.applicant.name %> 👤
+                                </a>
+                            </h3>
                             <p style="color: var(--text-muted); font-size: 0.9rem;">
                                 📧 <a href="mailto:<%= app.applicant.email %>" style="color: inherit; text-decoration: none;"><%= app.applicant.email %></a>
                             </p>
@@ -49,15 +53,24 @@
                     </div>
 
                     <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                        <!-- Resume Link -->
+                        
+                        <!-- Fixed Resume Link Block -->
                         <div style="flex: 1; min-width: 200px;">
-                            <% if (app.resume) { %>
-                                <a href="<%= app.resume %>" target="_blank" style="display: inline-block; background: #eef2ff; color: var(--accent-color); padding: 0.75rem 1rem; border-radius: 6px; font-weight: bold; text-decoration: none; border: 1px solid #c7d2fe; margin-bottom: 0.5rem;">
+                            <% 
+                                // Get raw resume string
+                                let rawResume = app.resume || (app.applicant && app.applicant.resume);
+                                // Clean up duplicate uploads/ prefix
+                                let cleanResume = rawResume ? rawResume.replace(/^\/?uploads\//, '') : '';
+                            %>
+                            
+                            <!-- STRICT CHECK: Ensure it exists, isn't empty, and isn't 'undefined' -->
+                            <% if (cleanResume && cleanResume.trim() !== '' && cleanResume !== 'undefined') { %>
+                                <a href="/uploads/<%= cleanResume %>" target="_blank" style="display: inline-block; background: #eef2ff; color: var(--accent-color); padding: 0.75rem 1rem; border-radius: 6px; font-weight: bold; text-decoration: none; border: 1px solid #c7d2fe; margin-bottom: 0.5rem;">
                                     📄 View Resume (PDF)
                                 </a>
                             <% } else { %>
                                 <span style="display: inline-block; background: #f1f5f9; color: #64748b; padding: 0.75rem 1rem; border-radius: 6px; font-weight: bold; border: 1px solid #e2e8f0; margin-bottom: 0.5rem;">
-                                    🚫 No Resume Submitted
+                                    🚫 No Resume Uploaded
                                 </span>
                             <% } %>
                             
@@ -75,6 +88,7 @@
                                 <p style="margin-top: 0.5rem; white-space: pre-wrap;"><%= app.coverLetter %></p>
                             </div>
                         <% } %>
+                        
                     </div>
 
                 </div>

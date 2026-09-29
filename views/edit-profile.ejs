@@ -1,0 +1,55 @@
+<%- include('partials/header', { title: 'Edit Profile' }) %>
+<%- include('partials/navbar') %>
+
+<main class="container" style="margin-top: 3rem; max-width: 700px;">
+    <div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        <h1 style="margin-bottom: 1.5rem;">Edit Profile</h1>
+
+        <form action="/profile/edit" method="POST" style="display: flex; flex-direction: column; gap: 1.2rem;">
+            
+            <div>
+                <label style="display: block; font-weight: bold; margin-bottom: 0.4rem;">Headline</label>
+                <input type="text" name="headline" placeholder="e.g. Full Stack Developer | Node.js & React" value="<%= user.headline %>" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px;">
+            </div>
+
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px;">
+                    <label style="display: block; font-weight: bold; margin-bottom: 0.4rem;">Location</label>
+                    <input type="text" name="location" placeholder="e.g. Mumbai, India" value="<%= user.location %>" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px;">
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <label style="display: block; font-weight: bold; margin-bottom: 0.4rem;">Phone Number</label>
+                    <input type="text" name="phone" placeholder="+91 9876543210" value="<%= user.phone %>" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px;">
+                </div>
+            </div>
+
+            <div>
+                <label style="display: block; font-weight: bold; margin-bottom: 0.4rem;">Skills (comma separated)</label>
+                <input type="text" name="skills" placeholder="JavaScript, Node.js, Express, MongoDB, HTML/CSS" value="<%= user.skills ? user.skills.join(', ') : '' %>" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px;">
+            </div>
+
+            <div>
+                <label style="display: block; font-weight: bold; margin-bottom: 0.4rem;">About / Bio</label>
+                <textarea name="bio" rows="4" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px;"><%= user.bio %></textarea>
+            </div>
+
+            <div>
+                <label style="display: block; font-weight: bold; margin-bottom: 0.4rem;">Work Experience</label>
+                <textarea name="experience" rows="3" placeholder="Summary of previous roles or projects..." style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px;"><%= user.experience %></textarea>
+            </div>
+
+            <div>
+                <label style="display: block; font-weight: bold; margin-bottom: 0.4rem;">Education</label>
+                <textarea name="education" rows="2" placeholder="Degree, college, graduation year..." style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px;"><%= user.education %></textarea>
+            </div>
+
+            <div style="display: flex; gap: 1rem; align-items: center; margin-top: 1rem;">
+                <button type="submit" class="btn-primary" style="padding: 0.75rem 1.5rem;">Save Changes</button>
+                <a href="/profile" class="btn-secondary" style="text-decoration: none; padding: 0.75rem 1.5rem;">Cancel</a>
+            </div>
+
+        </form>
+    </div>
+</main>
+
+<%- include('partials/footer') %>

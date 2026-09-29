@@ -5,11 +5,47 @@
     <h1 style="margin-bottom: 1.5rem;">Available Job Listings</h1>
 
     <!-- Search Form -->
-    <form action="/jobs" method="GET" style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
-        <input type="text" name="search" value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>" placeholder="Search by title, skills, or company" style="padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px; flex: 2; min-width: 200px;">
-        <input type="text" name="location" value="<%= typeof locationQuery !== 'undefined' ? locationQuery : '' %>" placeholder="City or State" style="padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px; flex: 1; min-width: 150px;">
-        <button type="submit" class="btn-primary" style="padding: 0.75rem 1.5rem; cursor: pointer;">Search</button>
+    <!-- Search & Filter Section -->
+<div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 2rem;">
+    <form action="/jobs" method="GET" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+        
+        <!-- Keyword Search -->
+        <div style="flex: 1; min-width: 200px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 0.5rem; color: var(--text-color);">Search</label>
+            <input type="text" name="q" placeholder="Job title, company..." 
+                   value="<%= locals.searchQuery && searchQuery.q ? searchQuery.q : '' %>" 
+                   style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px;">
+        </div>
+
+        <!-- Location -->
+        <div style="flex: 1; min-width: 200px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 0.5rem; color: var(--text-color);">Location</label>
+            <input type="text" name="location" placeholder="City, state, or remote..." 
+                   value="<%= locals.searchQuery && searchQuery.location ? searchQuery.location : '' %>" 
+                   style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px;">
+        </div>
+
+        <!-- Job Type -->
+        <div style="flex: 1; min-width: 150px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 0.5rem; color: var(--text-color);">Job Type</label>
+            <select name="type" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px;">
+                <option value="All">All Types</option>
+                <% const types = ['Full-Time', 'Part-Time', 'Contract', 'Internship']; %>
+                <% types.forEach(t => { %>
+                    <option value="<%= t %>" <%= locals.searchQuery && searchQuery.type === t ? 'selected' : '' %>><%= t %></option>
+                <% }) %>
+            </select>
+        </div>
+
+        <!-- Submit Button -->
+        <div>
+            <button type="submit" class="btn-primary" style="padding: 0.75rem 1.5rem; height: 100%;">
+                🔍 Search
+            </button>
+            <a href="/jobs" class="btn-secondary" style="padding: 0.75rem 1rem; margin-left: 0.5rem; text-decoration: none; display: inline-block;">Clear</a>
+        </div>
     </form>
+</div>
 
     <% if (jobs.length === 0) { %>
         <p>No jobs found matching your criteria.</p>

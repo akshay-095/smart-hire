@@ -1,32 +1,88 @@
 <%- include('partials/header', { title: 'My Profile' }) %>
 <%- include('partials/navbar') %>
 
-<main class="container" style="max-width: 600px; margin-top: 3rem;">
-    <div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        <h1 style="color: var(--primary-color);">My Profile</h1>
-        <p><strong>Name:</strong> <%= user.name %></p>
-        <p><strong>Email:</strong> <%= user.email %></p>
-        <p><strong>Account Type:</strong> <%= user.role === 'seeker' ? 'Job Seeker' : 'Recruiter' %></p>
-
-        <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid var(--border-color);">
-
-        <h2 style="margin-bottom: 1rem;">My Resume</h2>
+<main class="container" style="margin-top: 3rem; max-width: 800px;">
+    <div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
         
-        <% if (user.resume) { %>
-            <div style="background: #eef2ff; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border: 1px solid #c7d2fe;">
-                ✅ <strong>Resume Active:</strong> <a href="<%= user.resume %>" target="_blank" style="color: var(--accent-color); font-weight: bold; text-decoration: none;">View Current Resume</a>
-            </div>
-        <% } else { %>
-            <p style="color: #dc2626; font-weight: bold; margin-bottom: 1rem;">❌ No resume uploaded yet.</p>
-        <% } %>
-
-        <form action="/profile/upload" method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1rem; background: #f8f9fa; padding: 1.5rem; border-radius: 6px; border: 1px solid var(--border-color);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
             <div>
-                <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Upload/Update Resume (PDF only)</label>
-                <input type="file" name="resume" accept=".pdf" required style="padding: 0.5rem; background: white; border: 1px solid var(--border-color); border-radius: 6px; width: 100%;">
+                <h1 style="color: var(--primary-color); margin-bottom: 0.25rem;"><%= user.name %></h1>
+                <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 500;"><%= user.headline || 'No headline added yet' %></p>
+                <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.25rem;">
+                    📍 <%= user.location || 'Location not specified' %> • 📧 <%= user.email %> • 📞 <%= user.phone || 'N/A' %>
+                </p>
             </div>
-            <button type="submit" class="btn-primary" style="padding: 0.75rem; cursor: pointer;">Upload Resume</button>
-        </form>
+            <a href="/profile/edit" class="btn-primary" style="text-decoration: none; padding: 0.6rem 1.2rem;">✏️ Edit Profile</a>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 1.5rem 0;">
+
+        <!-- Bio -->
+        <div style="margin-bottom: 1.5rem;">
+            <h3>About Me</h3>
+            <p style="color: #334155; line-height: 1.6; margin-top: 0.5rem; white-space: pre-wrap;"><%= user.bio || 'Add a brief bio to tell recruiters about yourself.' %></p>
+        </div>
+
+        <!-- Skills -->
+        <div style="margin-bottom: 1.5rem;">
+            <h3>Skills</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
+                <% if (user.skills && user.skills.length > 0) { %>
+                    <% user.skills.forEach(skill => { %>
+                        <span style="background: #e0e7ff; color: #3730a3; padding: 0.3rem 0.8rem; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">
+                            <%= skill %>
+                        </span>
+                    <% }) %>
+                <% } else { %>
+                    <p style="color: var(--text-muted);">No skills listed yet.</p>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Experience & Education -->
+        <div style="display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 1.5rem;">
+            <div style="flex: 1; min-width: 280px;">
+                <h3>Experience</h3>
+                <p style="color: #334155; white-space: pre-wrap; margin-top: 0.5rem;"><%= user.experience || 'No experience detailed yet.' %></p>
+            </div>
+            <div style="flex: 1; min-width: 280px;">
+                <h3>Education</h3>
+                <p style="color: #334155; white-space: pre-wrap; margin-top: 0.5rem;"><%= user.education || 'No education detailed yet.' %></p>
+            </div>
+        </div>
+
+        <!-- Resume Section -->
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 1.5rem 0;">
+        <div style="margin-bottom: 1.5rem;">
+            <h3>Resume</h3>
+            
+            <% 
+                // Clean up string and strip accidental 'uploads/' prefix
+                let cleanResume = (user && user.resume && typeof user.resume === 'string') 
+                    ? user.resume.replace(/^\/?uploads\//, '').trim() 
+                    : '';
+                let hasResume = cleanResume && cleanResume !== 'undefined' && cleanResume !== 'null' && cleanResume.length > 0;
+            %>
+
+            <% if (hasResume) { %>
+                <p style="margin-top: 0.5rem; margin-bottom: 1rem;">
+                    <a href="/uploads/<%= cleanResume %>" target="_blank" style="color: var(--primary-color); font-weight: bold; text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem;">
+                        📄 View Current Resume
+                    </a>
+                </p>
+            <% } else { %>
+                <p style="color: #ef4444; font-weight: bold; margin-top: 0.5rem; margin-bottom: 1rem;">
+                    ⚠️ No resume uploaded currently. Please upload a PDF resume below before applying to jobs!
+                </p>
+            <% } %>
+
+            <!-- Upload Form -->
+            <form action="/profile/upload" method="POST" enctype="multipart/form-data" style="display: flex; gap: 1rem; align-items: center; background: #f8fafc; padding: 1rem; border-radius: 6px; flex-wrap: wrap;">
+                <input type="file" name="resume" accept="application/pdf" required style="border: 1px solid var(--border-color); padding: 0.4rem; background: white; border-radius: 4px;">
+                <button type="submit" class="btn-primary" style="padding: 0.5rem 1rem;">Upload PDF</button>
+            </form>
+        </div>
+
     </div>
 </main>
 

@@ -4,9 +4,17 @@ const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role: { type: String, required: true, enum: ['seeker', 'recruiter'] },
-    resume: { type: String, default: null }, // NEW: Stores the file path to the resume
-    createdAt: { type: Date, default: Date.now }
-});
+    role: { type: String, enum: ['seeker', 'recruiter'], default: 'seeker' },
+    
+    // Profile Fields
+    headline: { type: String, default: '' },
+    bio: { type: String, default: '' },
+    location: { type: String, default: '' },
+    phone: { type: String, default: '' },
+    skills: [{ type: String }],
+    experience: { type: String, default: '' },
+    education: { type: String, default: '' },
+    resume: { type: String }
+}, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

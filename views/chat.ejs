@@ -12,9 +12,9 @@
                 Position: <strong><%= application.job ? application.job.title : 'Job Application' %></strong>
             </p>
         </div>
-        <a href="<%= currentUser.role === 'recruiter' ? `/jobs/${application.job._id}/applicants` : '/my-applications' %>" class="btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; text-decoration: none;">
-            ← Back
-        </a>
+        <a href="<%= currentUser.role === 'recruiter' ? (application.job ? `/jobs/${application.job._id}/applicants` : '/dashboard') : '/my-applications' %>" class="btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem; text-decoration: none;">
+    ← Back
+</a>
     </div>
 
     <!-- Scrollable Chat Messages Container -->

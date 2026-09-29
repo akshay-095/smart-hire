@@ -1,0 +1,72 @@
+<%- include('partials/header', { title: candidate.name + "'s Profile" }) %>
+<%- include('partials/navbar') %>
+
+<main class="container" style="margin-top: 3rem; max-width: 800px;">
+    <div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+            <div>
+                <h1 style="color: var(--primary-color); margin-bottom: 0.25rem;"><%= candidate.name %></h1>
+                <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 500;"><%= candidate.headline || 'No headline provided' %></p>
+                <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.25rem;">
+                    📍 <%= candidate.location || 'Location not specified' %> • 📧 <a href="mailto:<%= candidate.email %>" style="color: inherit;"><%= candidate.email %></a> • 📞 <%= candidate.phone || 'N/A' %>
+                </p>
+            </div>
+            <button onclick="history.back()" class="btn-secondary" style="padding: 0.5rem 1rem; cursor: pointer;">&larr; Back</button>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 1.5rem 0;">
+
+        <!-- Bio -->
+        <div style="margin-bottom: 1.5rem;">
+            <h3>About Candidate</h3>
+            <p style="color: #334155; line-height: 1.6; margin-top: 0.5rem; white-space: pre-wrap;"><%= candidate.bio || 'No bio provided.' %></p>
+        </div>
+
+        <!-- Skills -->
+        <div style="margin-bottom: 1.5rem;">
+            <h3>Skills</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
+                <% if (candidate.skills && candidate.skills.length > 0) { %>
+                    <% candidate.skills.forEach(skill => { %>
+                        <span style="background: #e0e7ff; color: #3730a3; padding: 0.3rem 0.8rem; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">
+                            <%= skill %>
+                        </span>
+                    <% }) %>
+                <% } else { %>
+                    <p style="color: var(--text-muted);">No skills listed.</p>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Experience & Education -->
+        <div style="display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 1.5rem;">
+            <div style="flex: 1; min-width: 280px;">
+                <h3>Experience</h3>
+                <p style="color: #334155; white-space: pre-wrap; margin-top: 0.5rem;"><%= candidate.experience || 'No experience detailed.' %></p>
+            </div>
+            <div style="flex: 1; min-width: 280px;">
+                <h3>Education</h3>
+                <p style="color: #334155; white-space: pre-wrap; margin-top: 0.5rem;"><%= candidate.education || 'No education detailed.' %></p>
+            </div>
+        </div>
+
+        <!-- Resume Section -->
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 1.5rem 0;">
+        <div style="margin-bottom: 1.5rem;">
+            <h3>Resume</h3>
+            <% if (candidate.resume) { %>
+                <div style="margin-top: 1rem;">
+                    <a href="/uploads/<%= candidate.resume %>" target="_blank" class="btn-primary" style="text-decoration: none; padding: 0.6rem 1.2rem; display: inline-block;">
+                        📄 Download / View Resume
+                    </a>
+                </div>
+            <% } else { %>
+                <p style="color: var(--text-muted); margin-top: 0.5rem;">This candidate has not uploaded a resume.</p>
+            <% } %>
+        </div>
+
+    </div>
+</main>
+
+<%- include('partials/footer') %>

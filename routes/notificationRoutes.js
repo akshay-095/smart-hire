@@ -7,4 +7,7 @@ router.get('/notifications', isAuthenticated, notificationController.getNotifica
 router.get('/notifications/:id/read', isAuthenticated, notificationController.readNotification);
 router.post('/notifications/mark-all-read', isAuthenticated, notificationController.markAllAsRead);
 
+// Delete single notification
+router.post('/notifications/:id/delete', isAuthenticated, notificationController.deleteNotification);
+
 module.exports = router;

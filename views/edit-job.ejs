@@ -26,8 +26,9 @@
                 <div>
                     <label style="display: block; font-weight: bold; margin-bottom: 0.25rem;">Job Type</label>
                     <select name="type" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px;">
-                        <option value="Full-time" <%= job.type === 'Full-time' ? 'selected' : '' %>>Full-time</option>
-                        <option value="Part-time" <%= job.type === 'Part-time' ? 'selected' : '' %>>Part-time</option>
+                        <option value="Full-Time" <%= job.type === 'Full-Time' ? 'selected' : '' %>>Full-time</option>
+                        <option value="Part-Time" <%= job.type === 'Part-Time' ? 'selected' : '' %>>Part-time</option>
+                        <option value="Contract" <%= job.type === 'Contract' ? 'selected' : '' %>>Contract</option>
                         <option value="Internship" <%= job.type === 'Internship' ? 'selected' : '' %>>Internship</option>
                     </select>
                 </div>

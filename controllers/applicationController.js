@@ -6,7 +6,6 @@ const Notification = require('../models/Notification');
 // Show Job Application Form
 exports.getApplyForm = async (req, res) => {
     try {
-        // Ensure user is a job seeker
         if (req.session.user.role !== 'seeker') {
             return res.status(403).send("Only Job Seekers can apply for jobs.");
         }
@@ -17,13 +16,12 @@ exports.getApplyForm = async (req, res) => {
             return res.status(404).send("Job not found");
         }
 
-        // Check if candidate uploaded a resume (ONLY if the job requires it)
         const user = await User.findById(req.session.user.id);
-        if (job.resumeRequired && !user.resume) {
-            return res.render('profile', { 
-                user, 
-                error: "This job requires a resume. Please upload one before applying." 
-            });
+
+        // Check if candidate uploaded a resume (if required by job)
+        const hasResume = user.resume && user.resume.trim() !== '' && user.resume !== 'undefined';
+        if (job.resumeRequired && !hasResume) {
+            return res.redirect('/profile');
         }
         
         res.render('apply-job', { job, user, error: null });
@@ -50,18 +48,19 @@ exports.postApplyJob = async (req, res) => {
 
         const user = await User.findById(req.session.user.id);
         
-        // Redirect if resume is required but missing
-        if (job.resumeRequired && !user.resume) {
+        const hasResume = user.resume && user.resume.trim() !== '' && user.resume !== 'undefined';
+
+        // Block submission if resume is required but missing
+        if (job.resumeRequired && !hasResume) {
             return res.redirect('/profile');
         }
 
-        // Create new application record
+        // Create new application record (ALWAYS attach user.resume if present)
         const newApplication = new Application({
             job: job._id,
             applicant: user._id,
             recruiter: job.postedBy,
-            // ONLY attach the resume if the job actually requires it
-            resume: job.resumeRequired ? user.resume : '', 
+            resume: user.resume || '', // Always attach user's resume if it exists
             githubUrl: githubUrl || '',
             coverLetter: coverLetter || ''
         });
@@ -79,7 +78,7 @@ exports.postApplyJob = async (req, res) => {
         res.redirect('/my-applications');
     } catch (error) {
         if (error.code === 11000) {
-            // Duplicate key error from MongoDB compound index
+            // User already applied to this job
             return res.redirect('/my-applications');
         }
         console.error("Error submitting application:", error);
@@ -87,14 +86,13 @@ exports.postApplyJob = async (req, res) => {
     }
 };
 
-// View Job Seeker's Applied Jobs Dashboard
+// Job Seeker: View My Submitted Applications
 exports.getMyApplications = async (req, res) => {
     try {
         if (req.session.user.role !== 'seeker') {
             return res.status(403).send("Access restricted to Job Seekers.");
         }
 
-        // Fetch applications and populate linked job details
         const applications = await Application.find({ applicant: req.session.user.id })
             .populate('job')
             .sort({ appliedAt: -1 });
@@ -116,14 +114,12 @@ exports.getJobApplicants = async (req, res) => {
         const jobId = req.params.id;
         const job = await Job.findById(jobId);
 
-        // Security: Ensure the recruiter owns this job
         if (!job || job.postedBy.toString() !== req.session.user.id) {
             return res.status(403).send("Unauthorized to view these applications.");
         }
 
-        // Fetch applications and populate applicant details (name and email)
         const applications = await Application.find({ job: jobId })
-            .populate('applicant', 'name email')
+            .populate('applicant', 'name email resume') 
             .sort({ appliedAt: -1 });
 
         res.render('job-applicants', { job, applications });
@@ -133,7 +129,6 @@ exports.getJobApplicants = async (req, res) => {
     }
 };
 
-// Recruiter: Update Application Status
 // Recruiter: Update Application Status
 exports.updateApplicationStatus = async (req, res) => {
     try {
@@ -146,16 +141,13 @@ exports.updateApplicationStatus = async (req, res) => {
 
         const application = await Application.findById(applicationId);
         
-        // Security: Ensure the recruiter updating the status is the one who owns it
         if (!application || application.recruiter.toString() !== req.session.user.id) {
             return res.status(403).send("Unauthorized to update this application.");
         }
 
-        // Update status and save
         application.status = status;
         await application.save();
 
-        // TRIGGER NOTIFICATION: Inform candidate of status change
         const job = await Job.findById(application.job);
         await Notification.create({
             recipient: application.applicant,
@@ -164,7 +156,6 @@ exports.updateApplicationStatus = async (req, res) => {
             link: `/my-applications`
         });
 
-        // Redirect explicitly back to the applicants list for this job
         res.redirect(`/jobs/${application.job}/applicants`);
     } catch (error) {
         console.error("Error updating status:", error);
@@ -182,15 +173,11 @@ exports.deleteApplication = async (req, res) => {
         const applicationId = req.params.id;
         const application = await Application.findById(applicationId);
 
-        // Security: Ensure the user deleting the application is the applicant
         if (!application || application.applicant.toString() !== req.session.user.id) {
             return res.status(403).send("Unauthorized to cancel this application.");
         }
 
-        // Delete the application
         await Application.findByIdAndDelete(applicationId);
-
-        // Redirect back to the applications dashboard
         res.redirect('/my-applications');
     } catch (error) {
         console.error("Error cancelling application:", error);

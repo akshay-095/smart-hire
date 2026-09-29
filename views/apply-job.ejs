@@ -15,8 +15,7 @@
                 <div style="background: #f8fafc; padding: 1rem; border: 1px solid var(--border-color); border-radius: 6px;">
                     <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Attached Resume (Required)</label>
                     <p style="margin: 0; font-size: 0.95rem;">
-                        📄 <a href="<%= user.resume %>" target="_blank" style="color: var(--accent-color); font-weight: bold; text-decoration: none;">View Attached Resume</a>
-                    </p>
+                        📄 <a href="/uploads/<%= user.resume %>" target="_blank" style="color: var(--accent-color); font-weight: bold; text-decoration: none;">View Attached Resume</a>
                 </div>
             <% } else { %>
                 <div style="background: #f0fdf4; padding: 1rem; border: 1px solid #bbf7d0; border-radius: 6px; color: #166534;">
